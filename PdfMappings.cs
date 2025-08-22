@@ -224,4 +224,49 @@ public class PdfMappings
             action.Put(PdfName.JS, new PdfString(jsCode));
         }
     }
+    
+    private void PrintActionToConsole(PdfDictionary action)
+    {
+        var js = action.GetAsString(PdfName.JS);
+        if (js == null)
+        {
+            return;
+        }
+
+        var jsCode = js.ToUnicodeString().Trim();
+        Console.WriteLine(jsCode);
+    }
+
+    public void PrintActions(string sourcePdfFileName)
+    {
+        using var reader = new PdfReader(sourcePdfFileName);
+        using var document = new PdfDocument(reader);
+
+        PdfAcroForm form = PdfAcroForm.GetAcroForm(document, false);
+        IDictionary<string, PdfFormField> fields = form.GetAllFormFields();
+
+        foreach (var item in fields)
+        {
+            var f = item.Value;
+            var dict = f.GetPdfObject();
+            var aa = dict.GetAsDictionary(PdfName.AA);
+            if (aa == null)
+            {
+                continue;
+            }
+
+            var formatAction = aa.GetAsDictionary(PdfName.F);
+            Console.WriteLine(item.Key);
+            if (formatAction != null)
+            {
+                PrintActionToConsole(formatAction);
+            }
+
+            var keyStrokeAction = aa.GetAsDictionary(PdfName.K);
+            if (keyStrokeAction != null)
+            {
+                PrintActionToConsole(keyStrokeAction);
+            }
+        }
+    }
 }
