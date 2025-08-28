@@ -26,7 +26,7 @@ public class PdfMappings
         using (PdfReader reader = new PdfReader(System.IO.File.OpenRead(pdfFileName)))
         {
             PdfDocument document = new PdfDocument(reader);
-            PdfAcroForm form = PdfAcroForm.GetAcroForm(document, true);
+            PdfAcroForm form = PdfAcroForm.GetAcroForm(document, false);
             var dictionary = form.GetAllFormFields();
             var fieldNames = dictionary.Keys.Order().ToArray();
 
@@ -224,7 +224,7 @@ public class PdfMappings
             action.Put(PdfName.JS, new PdfString(jsCode));
         }
     }
-    
+
     private void PrintActionToConsole(PdfDictionary action)
     {
         var js = action.GetAsString(PdfName.JS);
@@ -266,6 +266,30 @@ public class PdfMappings
             if (keyStrokeAction != null)
             {
                 PrintActionToConsole(keyStrokeAction);
+            }
+        }
+    }
+
+    public void TestForm(string pdf)
+    {
+        using var reader = new PdfReader(pdf);
+        using var document = new PdfDocument(reader);
+        var catalog = document.GetCatalog();
+        var acroFormDict = catalog.GetPdfObject().GetAsDictionary(PdfName.AcroForm);
+        if (acroFormDict != null)
+        {
+            var fields = acroFormDict.GetAsArray(PdfName.Fields);
+            for (int i = 0; i < fields.Size(); i++)
+            {
+                var fieldRef = fields.GetAsDictionary(i);
+                if (fieldRef != null)
+                {
+                    var fieldName = fieldRef.GetAsString(PdfName.T);
+                    var mapping = fieldRef.GetAsString(PdfName.TM);
+
+                    Console.WriteLine($"Campo {i}: {fieldName?.ToUnicodeString() ?? "Sin Nombre"}");
+                    Console.WriteLine($"Campo {i}: {mapping?.ToUnicodeString() ?? "No Mapping"}");
+                }
             }
         }
     }

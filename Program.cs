@@ -22,11 +22,11 @@ void SetMappintsToNewPdf(string sourcePDF, string excelFileName, string resultPd
     pdf.SetPdfMappings(sourcePDF, excelFileName, resultPdf);
 }
 
-string sourceFolder = @"C:\Users\JoseContreras\OneDrive - intelliflo\Desktop\6282";
-string sourcePdf = @"Individual Transfer on Death Account Agreement Aug 2025.pdf";
+string sourceFolder = @"C:\Users\JoseContreras\OneDrive - intelliflo\Desktop\6282\To Deploy";
+string sourcePdf = @"Joint Transfer on Death Account Agreement Aug 2025.pdf";
 //System.IO.Path.Combine(sourceFolder, sourcePdf)
 
 SaveMappingsToExcel(
     System.IO.Path.Combine(sourceFolder, sourcePdf),
-    System.IO.Path.Combine(sourceFolder, "Aug 2025.xlsx")
+    System.IO.Path.Combine(sourceFolder, "mappings.xlsx")
 );
