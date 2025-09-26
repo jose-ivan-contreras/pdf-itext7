@@ -35,6 +35,11 @@ public class PdfFieldInfo
     private static string GetFielType(PdfFormField field)
     {
         var type = field.GetFormType();
+        if (type == null)
+        {
+            return "Other";
+        }
+
         if (type.Equals(PdfName.Tx))
         {
             return "Text";
